@@ -71,24 +71,26 @@ namespace CSV_file_converter
                             // Remove leading and trailing whitespace. Escape singe quotes to double single quotes. Remove leading and trailing double quotes
                             string tmpFieldValue = fields[fieldNumberInt].Trim().Replace("'", "''").Trim('"');
                             tmpSQL = tmpSQL.Replace(tmpPlaceholder, tmpFieldValue);
-
-                            rowBatchCounter++;
                         }
 
                         // Add the generated SQL clause:
                         sqlClauses.Add(tmpSQL);
+                        rowBatchCounter++;
                     }
                 }
                 totalRowCount++;
 
                 // Should we commit
-                if (rowBatchCounter == rowsBetweenGo)
+                if (rowBatchCounter >= rowsBetweenGo)
                 {
                     sqlClauses.Add("go");
                     rowBatchCounter = 0;
                 }
 
             }
+
+            if (rowBatchCounter > 0)
+                sqlClauses.Add("go");
 
             return sqlClauses;
         }
